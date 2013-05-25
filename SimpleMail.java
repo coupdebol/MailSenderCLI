@@ -15,6 +15,8 @@ public class SimpleMail {
 			String message="";
 			String response="";
 			boolean connected= false;
+			ArrayList<String> toEmails = new ArrayList<String>();
+			ArrayList<String> ccEmails = new ArrayList<String>();
 			
 			while(!connected){
 				//Connecting to mail server
@@ -87,6 +89,8 @@ public class SimpleMail {
 						System.err.println("ERROR: " + e);
 					}
 				}
+				toEmails.add(command);//add server validated to list of TO emails
+				
 				System.out.print("Type y for another email:");
 				response = user.nextLine();
 				response = response.trim().toUpperCase();
@@ -97,7 +101,7 @@ public class SimpleMail {
 			
 
 //			/* Send an CC*/ 
-			System.out.println("Do you want to send to CC?");
+			System.out.print("Do you want to send to CC?");
 			response = "";
 			response = user.nextLine();
 			if(response.trim().toUpperCase().equals("Y")){
@@ -119,6 +123,7 @@ public class SimpleMail {
 							System.err.println("ERROR: " + e);
 						}
 					}
+					ccEmails.add(command);//add server validated to list of CC emails
 					System.out.print("Type y for another email:");
 					response= "";
 					response = user.nextLine();
@@ -130,27 +135,44 @@ public class SimpleMail {
 			}
 			
 
-//			/* Send the DATA command*/ out.print("DATA" + "\r\n"); 
-//			out.flush();
-//			System.out.println(in.nextLine()); //print out server response
-//
+			/* Send the DATA command*/ out.print("DATA" + "\r\n"); 
+			out.flush();
+			System.out.println(in.nextLine()); //print out server response
+
+			
+			
 //			/* Send email Body*/
-//			out.print("SUBJECT: this is a test"+ "\r\n");
-//			out.flush(); 
-//
-//			out.print("CC: coupdebol@live.com" + "\r\n");
-//			out.flush();
-//
-//			out.print("How are you?" + "\r\n");
-//			out.flush();
-//
-//			out.print("See you at 1pm." + "\r\n");
-//			out.flush();
-//			 
-//			out.print("." + "\r\n"); 
-//			out.flush(); 
-//
-//			System.out.println(in.nextLine()); //print out server response
+//			
+			
+			System.out.print("email Subject:");
+			response = "";
+			response = user.nextLine();
+			
+			
+			out.print("SUBJECT: "+ response + "\r\n");
+			out.flush(); 
+			
+			for(String email: toEmails){
+				out.print("TO: "+ email + "\r\n");
+				out.flush();
+			}
+			
+			for(String email: ccEmails){
+				out.print("CC: "+ email + "\r\n");
+				out.flush();
+			}
+			
+			System.out.print("email Body:");
+			response = "";
+			response = user.nextLine();
+			
+			out.print(response + "\r\n");
+			out.flush();
+			 
+			out.print("." + "\r\n"); 
+			out.flush(); 
+
+			System.out.println(in.nextLine()); //print out server response
 			
 			try {
 				user.close();
@@ -165,6 +187,7 @@ public class SimpleMail {
 	public static void main(String[] args) {
 		System.out.println("Welcome to Simple Mail...");
 		new SimpleMail();
+		System.out.println("Thank for using Simple Mail...goodbye");
 		
 	}
 	
