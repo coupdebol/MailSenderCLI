@@ -69,7 +69,6 @@ public class SimpleMail {
 
 			
 			/* Send RCPT TO ... */
-			
 			boolean moreTo=false;
 			do{
 				reply="";
@@ -98,14 +97,39 @@ public class SimpleMail {
 			
 
 //			/* Send an CC*/ 
-//			message =  "RCPT TO: " + "coupdebol@live.com" + "\r\n";
-//			System.out.println(message);
-//			out.print(message);
-//			out.flush(); 
-//			System.out.println(in.nextLine()); //print out server response
-//
-//
-//
+			System.out.println("Do you want to send to CC?");
+			response = "";
+			response = user.nextLine();
+			if(response.trim().toUpperCase().equals("Y")){
+				boolean moreCc=false;
+				do{
+					reply="";
+					while(parseReply(reply)!=250){
+						try{
+							System.out.print("Email Cc:");
+							command= user.nextLine();
+							
+							message =  "RCPT TO: " + command + "\r\n";
+							System.out.println(message);
+							out.print(message); 
+							out.flush(); 
+							reply = in.nextLine();
+							System.out.println(reply); //print out server response
+						}catch (Exception e) {
+							System.err.println("ERROR: " + e);
+						}
+					}
+					System.out.print("Type y for another email:");
+					response= "";
+					response = user.nextLine();
+					response = response.trim().toUpperCase();
+					moreCc = false;
+					if(response.equals("Y"))
+						moreCc= true;
+				}while(moreCc);
+			}
+			
+
 //			/* Send the DATA command*/ out.print("DATA" + "\r\n"); 
 //			out.flush();
 //			System.out.println(in.nextLine()); //print out server response
