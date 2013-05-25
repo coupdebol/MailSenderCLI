@@ -13,6 +13,7 @@ public class SimpleMail {
 			String command= "";
 			String reply="";
 			String message="";
+			String response="";
 			boolean connected= false;
 			
 			while(!connected){
@@ -65,14 +66,37 @@ public class SimpleMail {
 					System.err.println("ERROR: " + e);
 				}
 			}
-//
-//			/* Send RCPT TO ... */
-//			message =  "RCPT TO: " + "971801x@student.swin.edu.au" + "\r\n";
-//			System.out.println(message);
-//			out.print(message); 
-//			out.flush(); 
-//			System.out.println(in.nextLine()); //print out server response
-//
+
+			
+			/* Send RCPT TO ... */
+			
+			boolean moreTo=false;
+			do{
+				reply="";
+				while(parseReply(reply)!=250){
+					try{
+						System.out.print("Email To:");
+						command= user.nextLine();
+						
+						message =  "RCPT TO: " + command + "\r\n";
+						System.out.println(message);
+						out.print(message); 
+						out.flush(); 
+						reply = in.nextLine();
+						System.out.println(reply); //print out server response
+					}catch (Exception e) {
+						System.err.println("ERROR: " + e);
+					}
+				}
+				System.out.print("Type y for another email:");
+				response = user.nextLine();
+				response = response.trim().toUpperCase();
+				moreTo = false;
+				if(response.equals("Y"))
+					moreTo= true;
+			}while(moreTo);
+			
+
 //			/* Send an CC*/ 
 //			message =  "RCPT TO: " + "coupdebol@live.com" + "\r\n";
 //			System.out.println(message);
