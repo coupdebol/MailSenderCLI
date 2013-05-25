@@ -4,7 +4,7 @@ import java.util.*;
 
 public class SimpleMail {
 
-	public SimpleMail() { 
+	public SimpleMail(){ 
 		 
 			Scanner user = new Scanner(System.in);
 			Socket s = null;
@@ -12,40 +12,59 @@ public class SimpleMail {
 			PrintWriter out =null;
 			String command= "";
 			String reply="";
+			String message="";
+			boolean connected= false;
 			
-			while(parseReply(reply)!=220){		
-				System.out.print("Mail Server:");
-				command= user.nextLine();
+			while(!connected){
+				//Connecting to mail server
+				while(parseReply(reply)!=220){		
+					System.out.print("Mail Server:");
+					command= user.nextLine();
+					try {
+						s = new Socket(command, 25); 
+						in = new Scanner(s.getInputStream()); //from SMTP server
+						out = new PrintWriter(s.getOutputStream(), true);
+						reply = in.nextLine();
+						System.out.println(reply);//SMTP server response
+					}catch (IOException e) {
+						System.err.println("ERROR: " + e);
+					} 
+				}	
+				//HELO command
 				try {
-					s = new Socket(command, 25); 
-					in = new Scanner(s.getInputStream()); //from SMTP server
-					out = new PrintWriter(s.getOutputStream(), true);
+					String hostName = InetAddress.getLocalHost().getHostName(); 
+					System.out.println("hostName: " + hostName); 
+					
+					message = "HELO " + hostName + "\r\n";
+					System.out.println(message);
+					out.print(message); 
+					out.flush();
 					reply = in.nextLine();
-					System.out.println(reply);//SMTP server response
+					System.out.println(reply);
+					if(parseReply(reply)==250)
+						connected =true;
 				}catch (IOException e) {
 					System.err.println("ERROR: " + e);
-				} 
-			}	
-			try {
-				String hostName = InetAddress.getLocalHost().getHostName(); 
-				System.out.println("hostName: " + hostName); 
-				
-				String message = "HELO " + hostName + "\r\n";
-				System.out.println(message);
-				out.print(message); 
-				out.flush(); 
-				System.out.println(in.nextLine());
-			}catch (IOException e) {
-				System.err.println("ERROR: " + e);
+				}
 			}
-//			
-//
-//			/* Send MAIL FROM... */ 
-//			message = "MAIL FROM: " + "971801x@student.swin.edu.au" + "\r\n";
-//			out.print(message); 
-//			out.flush(); 
-//			System.out.println(in.nextLine()); //print out server response
-//
+			
+			
+			/* Send MAIL FROM... */ 
+			reply="";
+			while(parseReply(reply)!=250){
+				try{
+					System.out.print("Email From:");
+					command= user.nextLine();
+					
+					message = "MAIL FROM: " + command + "\r\n";
+					out.print(message); 
+					out.flush(); 
+					reply = in.nextLine();
+					System.out.println(reply); //print out server response
+				}catch (Exception e) {
+					System.err.println("ERROR: " + e);
+				}
+			}
 //
 //			/* Send RCPT TO ... */
 //			message =  "RCPT TO: " + "971801x@student.swin.edu.au" + "\r\n";
