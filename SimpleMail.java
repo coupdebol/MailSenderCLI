@@ -68,7 +68,7 @@ public class SimpleMail {
 
 			System.out.println(in.nextLine()); //print out server response
 
-
+			in.close();
 			s.close();
 		}catch (IOException e) {
 			System.err.println("ERROR: " + e);
