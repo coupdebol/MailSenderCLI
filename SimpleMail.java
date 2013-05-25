@@ -6,6 +6,7 @@ public class SimpleMail {
 
 	public SimpleMail() { 
 		try { 
+			Scanner user = new Scanner(System.in);
 			Socket s = new Socket("mail.swin.edu.au", 25); 
 			Scanner in = new Scanner(s.getInputStream()); //from SMTP server
 			PrintWriter out = new PrintWriter(s.getOutputStream(), true);
@@ -76,5 +77,6 @@ public class SimpleMail {
 	
 	public static void main(String[] args) {
 		new SimpleMail();
+		System.out.println("Welcome to Simple Mail...");
 	}
 }
